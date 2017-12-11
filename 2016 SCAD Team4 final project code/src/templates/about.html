@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Meteore</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+  <script src="https://use.fontawesome.com/230e98b440.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="icon" type="png" href="{% static 'images/personalPage/iconSmall.png' %}">
+
+  
+  <link rel="stylesheet" href='{% static "css/aboutPage/style.css"  %}' ">
+  <style>
+	.memberTable{
+		margin-left:auto;
+		margin-right:auto;
+		text-align:center;
+		text:30pt;
+	}
+	td,th{
+		padding-left:20px;
+		padding-right:20px;
+	}
+	body{
+		font-family: 'Montserrat', sans-serif;
+	}
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/index"><img src="{% static 'images/missionPage/icon.png' %}" alt="icon" class="img-responsive"width="140" height="78.7"/></a>
+    </div>
+  </div>
+</nav>
+	
+    <div id="soup-container">
+		<div id="segments">
+    </div>
+<div class="content" id="about">
+	<h2 style="text-align:center;">About Us</h2><br><br>
+	<div class="memberTable">
+		<table class ="memberTable">
+			<tHead>
+				<tr>
+					<th><h3>Charles</h3></th>
+					<th><h3>JoJo</h3></th>
+					<th><h3>Riensha</h3></th>
+					<th><h3>Karmii</h3></th>
+				</tr>
+			</tHead>
+			<tbody>
+				<tr>
+					<td> <img src='{% static "/images/aboutPage/charles.jpg" %}' class="img-circle img-responsive" alt="Cinque Terre" width="200" height="155"> </td>
+					<td> <img src='{% static "/images/aboutPage/JoJo.jpg" %}' class="img-circle img-responsive" alt="Cinque Terre" width="200" height="155"> </td>
+					<td> <img src='{% static "/images/aboutPage/riensha.jpg" %}' class="img-circle img-responsive" alt="Cinque Terre" width="200" height="155"> </td>
+					<td> <img src='{% static "/images/aboutPage/karmii.jpg" %}' class="img-circle img-responsive" alt="Cinque Terre" width="200" height="155"> </td>
+				</tr>
+				<tr>
+					<td><h4>The Man Who<br>Knows What's Going On</h5></td>
+					<td><h4>The Territory<br>Recapturer</h4></td>
+					<td><h4>The Longitudinal<br>Waver Of Air</h4></td>
+					<td><h4>The Passionate<br>Half-Hearted</h4></td>
+				</tr>
+				<tr>
+					<td><a href="mailto:charles5j21z@gmail.com">Contact Charles</a></td>
+					<td><a href="mailto:a5560648@gmail.com">Contact JoJo</a></td>
+					<td><a href="mailto:rienshaliu@gmail.com">Contact Riensha</a></td>
+					<td><a href="mailto:ohmygodorz315@gmail.com">Contact Karmii</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+	
+	</div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+
+    <script src="{% static 'javascripts/aboutPage/index.js' %}"></script>
+</body>
+</html>

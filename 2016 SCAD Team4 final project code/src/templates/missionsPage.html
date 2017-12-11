@@ -1,0 +1,493 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<title>Meteore</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="icon" type="png" href="{% static 'images/personalPage/iconSmall.png' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+.w3-sidenav a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+.secondLevel{
+	display:none;
+}
+.row.content {height: 510px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      height: 100%;
+    }
+	 @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+	.intext:disabled {
+		display:block;
+		width:100%;
+		height:34px;
+		padding:6px 12px;
+		font-size:14px;
+		line-height:1.42857143;
+		color:#555;
+		background-color:#fff;
+		background-image:none;
+		border:1px solid #ccc;
+		border-radius:4px;
+		-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+		box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+		-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+		-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+		transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+		margin-bottom: 10px;
+	}
+	#add_times{
+		font-size:20px;
+		padding:0px 8px;
+		margin-left: 10px;
+	}
+	#like{
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	.row{
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	.scrollable-menu {
+		height: auto;
+		max-height: 200px;
+		overflow-x: hidden;
+	}
+	.form-group {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+</style>
+<body>
+	<nav class="navbar" style="background-color:#006699;margin:0px;height:15%;width:100%;">
+		<div class="navbar-header">
+			<a href="/index"><img src="{% static 'images/missionPage/icon.png' %}" alt="icon" class="img-responsive"width="140" height="78.7"/></a>
+		</div>
+	</nav>
+	
+	<div class="row content"style="margin:0px;">
+		<div class="category col-sm-3 sidenav" style="background-color:white;">
+			<h5>Category Selector</h5>
+			<div class="container">
+			  <ul class="nav nav-pills nav-stacked">
+				<li><a href="#" onclick="showList('all')" active>Show All</a></li>
+				<li class="dropdown">
+				  <a class="dropdown-toggle" data-toggle="dropdown" href="#">Category<span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li><a href="#" onclick="showList('envir')">Environment</a></li>
+					<li><a href="#" onclick="showList('health')">Health</a></li>
+					<li><a href="#" onclick="showList('society')">Society</a></li>
+					<li><a href="#" onclick="showList('human')">HumanRelationship</a></li>
+					<li><a href="#" onclick="showList('knowledge')">Knowledge</a></li>				
+				  </ul>
+				</li>
+				<li><a href="#" onclick="showList('like')">Most Likes</a></li>
+				<li><a href="#" onclick="showList('participants')">Most Participants</a></li>
+			  </ul>
+			</div>
+		</div>
+		<div class="items col-sm-9 sidenav" style="background-color:#cce6ff;">
+			            
+			  <table class="table table-hover"">
+				<thead>
+				  <tr>
+					<th>Mission</th>
+					<th>Category</th>
+					<th>Like</th>
+				  </tr>
+				</thead>
+				<tbody id="listBody">
+				</tbody>
+			  </table>
+			<div class="pager">
+				 <ul class="pager">
+				  <li><a href="#" onclick="prePage()">Previous</a></li>
+				  <li><a href="#" onclick="nextPage()">Next</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+	  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 id="title">{{ text }}</h4>
+			<button type="button" class="btn btn-info btn-sm" id="kind">{{ text }}</button>
+			<button type="button" class="btn btn-info btn-sm" id="private">{{ text }}</button>
+        </div>
+        <div class="modal-body">
+			<!--<p>Some text in the modal.</p>-->
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Founder:</label><span id="founder">{{ text }}</span>
+				</div>
+				<div class="col-sm-6">
+					<div class="dropdown">
+						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+							<span id = "members"></span>
+							<span class="caret"></span>
+						</button>
+						<ul id="member_menu" class="dropdown-menu scrollable-menu">
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Total members:</label><span id="total_members">{{ text }}</span>
+				</div>
+				<div class="col-sm-6">
+					<label>Goal:</label><span id="goal_times"></span>
+				</div>
+			</div>
+			<textarea class="intext" id="detail" disabled>{{ text }}</textarea>
+			<div class="progress">
+				<div id="total_progress" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0"
+				aria-valuemin="0" aria-valuemax="100" style="width:0%">
+					
+				</div>
+			</div>
+			<div>
+				<label>Contribution:</label>
+				<div class="progress">
+					<div id="contribution_progress" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
+					aria-valuemin="0" aria-valuemax="100" style="width:0%">
+						
+					</div>
+				</div>
+			</div>
+			<label>Number of times:</label><span id="done_times"></span>
+			<a id = "add_a"><button type="button" id="add_times"class="btn btn-info btn-sm">+</button></a><br>
+			<a id="like_a"><img id="like" src="{% static '/images/likes.png' %}" alt="like" width="60" height="60"></a>
+        </div>
+        <div class="modal-footer">
+          <a id="join_a"><img id="join_quit" src="{% static '/images/JoinBtn.png' %}" alt="like" width="100" height="100"></a>
+        </div>
+        
+      
+      </div>
+
+    </div>
+  </div>
+  </div>
+  <script>
+   var contributionList = new Array();
+   var p = 0;
+   function Contribution(missionId, degree){
+      this.missionId = missionId;
+      this.degree = degree;
+    }
+   function getMissionDegree(missionId){
+      for(var i=0; i<contributionList.length; i++){
+        if(missionId == contributionList[i].missionId){
+          return contributionList[i].degree;
+        }
+      }
+      return null;
+    }
+  </script>
+  {% for item in user_contributions %}
+    <script>
+    contributionList[p] = new Contribution({{item.post.id}}, {{item.contribute}})
+    p += 1;
+    </script>
+  {% endfor %}
+   <script>
+    var testList = new Array();
+	var memberList = new Array();
+    var usermissionList = new Array();
+    var m = 0;
+	var k = 0;
+    var l = 0;
+	var now_user_nickname = "{{user.profile.nickname}}";
+    function mission(user,title,content,kind,private,totalmembers,member,like,goal,progress,id,isActive){
+      this.founder = user;
+      this.title = title;
+      this.content = content;
+      this.kind = kind;
+      this.private = private;
+      this.totalmembers = totalmembers;
+	  this.member = member;
+	  this.likes = like;
+      this.goal = goal;
+	  this.progress = progress;
+      this.id = id;
+	  this.show = false;
+	  this.active = (isActive.toLowerCase()=="true")?true:false;
+
+    }
+	
+  </script>
+  {% for obj in mission_list %}
+  <script>
+    var str = "{{obj.content}}";
+    var str_esc = escape(str);
+    memberList = new Array();
+    k = 0;
+    {% for item in obj.attendant.all %}
+      var name = "{{item.profile.nickname}}";
+      memberList[k]=name;
+      k++;
+    {% endfor %}
+    testList[m] = new mission("{{obj.user.profile.nickname}}","{{obj.title}}",str_esc,"{{obj.kind}}","{{obj.private}}",{{obj.totalmembers}},memberList,{{obj.likes}},{{obj.goal}},{{obj.progress}},{{obj.id}}, "{{obj.is_active}}");
+    m+=1;
+	//console.log(testList);
+  </script>
+  {% endfor %}
+  {% for item in user.post_attendant.all %}
+  <script>
+    usermissionList[l]={{item.id}};
+    l++;
+  </script>
+  {% endfor %}
+  
+	<script>
+		var missionPerPage = 10;
+		var pageNum = 0;
+		var elementNum =0;
+		//console.log(testList);
+		function showList(sel){
+			pageNum = 0;
+			if(!sel.localeCompare("all")){
+				for(i=0; i<testList.length; ++i){
+					if(testList[i].active == true)testList[i].show = true;
+					else testList[i].show = false;
+				}
+			}
+			else if(!sel.localeCompare("envir")){
+				console.log('envir');
+				for(i=0; i<testList.length; ++i){
+					if(testList[i].kind.toLowerCase() === "environment" && testList[i].active == true && testList[i].private.toLowerCase()=="public") testList[i].show = true;
+					else testList[i].show = false;
+				}
+			}
+			else if(!sel.localeCompare("health")){
+				for(i=0; i<testList.length; ++i){
+					if(testList[i].kind.toLowerCase() === "health"&& testList[i].active == true && testList[i].private.toLowerCase()=="public") testList[i].show = true;
+					else testList[i].show = false;
+				}
+			}
+			else if(!sel.localeCompare("society")){
+				for(i=0; i<testList.length; ++i){
+					if(testList[i].kind.toLowerCase() === "society"&& testList[i].active == true && testList[i].private.toLowerCase()=="public") testList[i].show = true;
+					else testList[i].show = false;
+				}
+			}
+			else if(!sel.localeCompare("human")){
+				for(i=0; i<testList.length; ++i){
+					if(testList[i].kind.toLowerCase() == "humanrelationship"&& testList[i].active == true && testList[i].private.toLowerCase()=="public") testList[i].show = true;
+					else testList[i].show = false;
+				}
+			}
+			else if(!sel.localeCompare("knowledge")){
+				for(i=0; i<testList.length; ++i){
+					if(testList[i].kind.toLowerCase() == "knowledge"&& testList[i].active == true && testList[i].private.toLowerCase()=="public") testList[i].show = true;
+					else testList[i].show = false;
+				}
+			}
+			else if(!sel.localeCompare("like")){
+				for(i=0;i<testList.length;++i){
+					if(testList[i].active == true && testList[i].private.toLowerCase()=="public")testList[i].show = true;
+					else testList[i].show = false;
+				}
+				testList.sort(function(a, b){return b.likes-a.likes});
+			}
+			else if(!sel.localeCompare("participants")){
+				for(i=0;i<testList.length;++i){
+					if(testList[i].active == true && testList[i].private.toLowerCase()=="public")testList[i].show = true;
+					else testList[i].show = false;
+				}
+				testList.sort(function(a, b){return b.member.length-a.member.length});
+			}
+			list = document.getElementById("listBody");
+			content = "";
+			//title, content, likes, postType, missionId
+			title="title";postType="type";likes=3;missionId=1;
+			num=0;
+			elementNum = 100;//result.length();
+			for(i=0;i<testList.length;++i){
+				if(testList[i].show){
+					title = testList[i].title;
+					postType = testList[i].kind;
+					likes = testList[i].likes;
+					missionId = i;
+					if(num<missionPerPage)	content+='<tr id="details'+num.toString()+'" style="width:100%" data-toggle="modal" data-target="#myModal" onclick="showmodal('+missionId+')"><td>'+title+"</td><td>"+postType+"</td><td>"+likes+"</td></tr>";
+					else content+='<tr id="details'+num.toString()+'" style="display:none;width:100%;" data-toggle="modal" data-target="#myModal" onclick="showmodal("'+missionId+'")"><td>'+title+"</td><td>"+postType+"</td><td>"+likes+"</td></tr>";
+					num=num+1;
+				}
+			}
+			elementNum = num;
+			list.innerHTML=content;
+		}
+		function prePage(){
+			if(pageNum!=0){
+				for(i=0;i<missionPerPage;++i){
+					if(document.getElementById("details"+(pageNum*missionPerPage+i).toString())){
+						d1 = document.getElementById("details"+(pageNum*missionPerPage+i).toString());
+						d1.style.display = "none";
+					}
+					d2 = document.getElementById("details"+((pageNum-1)*missionPerPage+i).toString());
+					d2.style.display = "";
+				}
+				pageNum = pageNum-1;
+			}
+		}
+		function nextPage(){
+			if((pageNum+1)*missionPerPage<elementNum){
+				for(i=0;i<missionPerPage;++i){
+					d1 = document.getElementById("details"+(pageNum*missionPerPage+i).toString());
+					d1.style.display = "none";
+					if(document.getElementById("details"+((pageNum+1)*missionPerPage+i).toString())){
+						d2 = document.getElementById("details"+((pageNum+1)*missionPerPage+i).toString());
+						d2.style.display = "";					
+					}
+				}
+				pageNum = pageNum+1;
+			}
+		}
+		
+		showList('all');
+		
+	</script>
+	<script>
+	var image = ["{% static 'images/likes.png' %}","{% static 'images/dislikes.png' %}","{% static 'images/JoinBtn.png' %}","{% static 'images/QuitBtn.png' %}"];
+	var members = 0;
+	
+	var title = "";
+	var founder = "";
+	var content = "";
+	var kind = "";
+	var privacy = "";
+	var total_members = 2;
+	var id = 0;
+	
+	var goal = 200;
+	var times = 0;
+	var progress = 99;
+	var progress_c = (times/goal)*100;
+	
+	var join_ornot = true;
+	
+	var like_ornot = false;
+	$(document).ready(function(){
+		
+		
+	});
+	
+	function showmodal(id){
+		var txt = "/profiles/add_attended/"+testList[id].id;
+		//var txt_esc = escape(txt);
+		//console.log(txt);
+		document.getElementById("join_a").setAttribute("href",txt);
+		var txt_like = "/profiles/mission_like/"+testList[id].id;
+		document.getElementById("like_a").setAttribute("href",txt_like);
+		var txt_addtime = "/profiles/mission_progress/"+testList[id].id;
+		document.getElementById("add_a").setAttribute("href",txt_addtime);
+		
+		console.log(testList[id]);
+		founder = testList[id].founder;
+		title = testList[id].title;
+		console.log(title);
+		content = unescape(testList[id].content);
+		kind = testList[id].kind;
+		privacy = testList[id].private;
+		total_members = testList[id].totalmembers;
+		goal = testList[id].goal;
+
+		contribution = getMissionDegree(testList[id].id);
+		if(contribution){
+			progress_c = (contribution/goal)*100;
+		}else{
+			progress_c = 0;
+		}
+		
+		document.getElementById("title").innerHTML=title;
+		document.getElementById("kind").innerHTML=kind;
+		document.getElementById("private").innerHTML=privacy;
+		document.getElementById("founder").innerHTML=founder;
+		document.getElementById("total_members").innerHTML=total_members;
+		document.getElementById("goal_times").innerHTML=goal;
+		document.getElementById("detail").innerHTML=content;
+		
+		document.getElementById("members").innerHTML=testList[id].member.length+" members";
+		document.getElementById("member_menu").innerHTML = "";
+		for (i=0;i<testList[id].member.length;i++){
+			document.getElementById("member_menu").innerHTML+='<li><a href="#">'+testList[id].member[i]+'</a></li>';
+		}
+		
+		document.getElementById("goal_times").innerHTML=goal;
+		document.getElementById("done_times").innerHTML=contribution;
+		progress = (testList[id].progress/goal)*100;
+		var x = progress.toPrecision(3);
+		document.getElementById("total_progress").innerHTML=x+"% Complete";
+		var y = progress_c.toPrecision(3);
+		document.getElementById("contribution_progress").innerHTML=y+"% Complete";
+		
+		$("#total_progress").css("width",x+"%");
+		$("#total_progress").attr("aria-valuenow",progress);
+		$("#contribution_progress").css("width",y+"%");
+		$("#contribution_progress").attr("aria-valuenow",progress_c);
+		if (now_user_nickname==founder){
+			$("#join_quit").css("display","none");
+		}
+		else {
+			if (privacy=="Individual"){
+				$("#join_quit").css("display","none");
+			}
+			else if(total_members==testList[id].member.length){
+				$("#join_quit").css("display","none");
+			}
+			else{
+				$("#join_quit").css("display","");
+			}
+		}
+		join_ornot = false;
+		for (i=0;i<usermissionList.length;i++){
+			if (usermissionList[i]==testList[id].id){
+				join_ornot = true;
+			}
+		}
+		if (join_ornot){
+			document.getElementById("add_times").disabled = false;
+			document.getElementById("join_quit").src=image[3];
+		}
+		else{
+			document.getElementById("add_times").disabled = true;
+			if (now_user_nickname==founder){
+				document.getElementById("add_times").disabled = false;
+			}
+			document.getElementById("join_quit").src=image[2];
+		}
+		if (like_ornot){
+			document.getElementById("like").src=image[1];
+		}
+		else{
+			document.getElementById("like").src=image[0];
+		}
+	}
+
+	</script>
+
+</body>
+</html>

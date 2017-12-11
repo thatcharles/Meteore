@@ -1,0 +1,22 @@
+			html,
+			body {
+			  background: black;
+			  width: 100%;
+			  height: 100%;
+			  margin: 0px;
+			  font-family: "Montserrat", sans-serif;
+			}
+			
+			#viewport {
+			  position: relative;
+			  width: 100%;
+			  height: 100%;
+			}
+			
+			#viewport canvas {
+			  position: absolute;
+			}
+			
+			canvas {
+			  background-color: transparent;
+			}

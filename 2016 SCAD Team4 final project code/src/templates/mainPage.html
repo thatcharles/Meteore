@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Meteore</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/mainPage/style2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mainPage/modalstyle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/createPlanetPage/style.css' %}">
+    <link rel="icon" type="png" href="{% static 'images/personalPage/iconSmall.png' %}">
+  </head>
+
+  <body>
+  <script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.8&appId=275311166197834";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+    <div class="container">
+      <!-- Mission Modal -->
+      <div class="modal fade" id="myModal" role="dialog" style="display:none;">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 id="title">Title</h4>
+              <button type="button" id="kind" class="btn btn-info btn-sm">Health</button>
+              <button type="button" id="private" class="btn btn-info btn-sm">Public</button>
+            </div>
+            <div class="modal-body">
+              <!--<p>Some text in the modal.</p>-->
+              <div class="row">
+                <div class="col-sm-6">
+                  <label>Founder:</label><span id="founder">helen</span>
+                </div>
+                <div class="col-sm-6">
+                  <div class="dropdown">
+                    <button id="members" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">3 members
+                      <span class="caret"></span>
+                    </button>
+                    <ul id="member_menu" class="dropdown-menu scrollable-menu">
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label>Total members:</label><span id="total_members">100</span>
+                </div>
+                <div class="col-sm-6">
+                  <label>Goal:</label><span id="goal_times"></span>
+                </div>
+              </div>
+              <textarea class="intext" id="detail" disabled>exercise</textarea>
+              <div class="progress">
+                <div id="total_progress" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+
+                </div>
+              </div>
+              <div>
+                <label>Contribution:</label>
+                <div class="progress">
+                  <div id="contribution_progress" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+
+                  </div>
+                </div>
+              </div>
+              <label>Number of times:</label><span id="done_times"></span>
+              <a id="add_a"><button type="button" id="add_times" class="btn btn-info btn-sm">+</button></a>
+              <br>
+              <a id="like_a"><img id="like" src="{% static '/images/likes.png' %}" alt="like" width="60" height="60"></a><!--Riensha btn-info拿掉-->
+            </div>
+
+            
+            <div class="modal-footer">
+              <a id="join_a"><img id="join_quit" src="{% static '/images/JoinBtn.png' %}" alt="like" width="100" height="100"></a>
+            </div>
+
+            <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Create Mission Modal -->
+    <div class="modal fade" id="empty_sheet" role="dialog" style="display:none;">
+      <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <form action="{% url 'posts:create' %}" method="POST">
+      {% csrf_token %}
+
+      <div class="modal-content">
+	  
+        <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<input type="text" class="form-control" id="form_title" name="form_title" placeholder="Give me a title">
+			<div class="form-inline">
+				<div class="form-group">
+					<label>Category:</label>
+					<select class="form-control" id="form_kind" name="form_kind">
+						<option>Environment</option>
+						<option>Health</option>
+						<option>Society</option>
+						<option>Human relationship</option>
+						<option>Knowledge</option>
+					</select>
+				</div>
+				<div onmouseleave="mouseleave()" class="form-group">
+					<select class="form-control" id="form_private" name="form_private">
+						<option>Public</option>
+						<option id="individual">Individual</option>
+					</select>
+				</div>
+			</div>
+        </div>
+		
+        <div class="modal-body">
+        <div class="form-inline">
+				<div class="form-group">
+					<label>Total members:</label>
+					<input type="number" min="2" class="form-control" id="form_totalmembers" name="form_totalmembers" placeholder="Enter a number">
+				</div>
+				<div class="form-group">
+					<label>Goal:</label>
+					<input type="number" min="1" class="form-control" id="form_goal" name="form_goal" placeholder="Enter a number">
+				</div>
+        </div>
+			<textarea class="form-control" rows="5" id="form_detail" name="form_detail" style="margin-bottom:10px;margin-top:10px;" placeholder="Do something"></textarea>
+        </div>
+		
+        <div class="modal-footer">
+          <button type="submit" id="form_add" class="btn btn-info" >Add Mission</button>
+        </div>
+		
+      </div>
+
+      </form>
+
+	   </div>
+	 </div>
+      <!-- Create New Planet Modal -->
+      <!-- Modal -->
+      <form action="{% url 'profiles:append' user_id=user.id %}" method="POST">
+      {% csrf_token %}
+   <div class="modal" id="new_planet" role="dialog" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog">
+    
+      <!-- Modal content-->
+       <div class="modal-content">
+    
+      <div class="modal-header">
+      <h4>Create your star</h4>
+        </div>
+    
+        <div class="modal-body">
+        <div class="form-group">
+          <label class="col-sm-1">Name:</label>
+          <div class="col-sm-11">
+            <input type="text" class="form-control" id="form_planet_name" name="form_planet_name">
+          </div>
+        </div>
+      <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+      </ol>
+
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner" role="listbox">
+        <div hidden>
+          <select name="planet_color">
+            <option id="red">Red</option>
+            <option id="yellow">Yellow</option>
+            <option id="blue">Blue</option>
+            <option id="white">White</option>
+          </select>
+        </div>
+        <div class="item active">
+        <img src="{% static '/images/createPlanetPage/red.png' %}" alt="Chania" width="460" height="345">
+        <div class="carousel-caption">
+          <h3>Red</h3>
+          <p></p>
+        </div>
+        </div>
+
+        <div class="item">
+        <img src="{% static '/images/createPlanetPage/yellow.png' %}" alt="Chania" width="460" height="345">
+        <div class="carousel-caption">
+          <h3>Yellow</h3>
+          <p></p>
+        </div>
+        </div>
+      
+        <div class="item">
+        <img src="{% static '/images/createPlanetPage/blue.png' %}" alt="Flower" width="460" height="345">
+        <div class="carousel-caption">
+          <h3>Blue</h3>
+          <p></p>
+        </div>
+        </div>
+
+        <div class="item">
+        <img src="{% static '/images/createPlanetPage/white.png' %}" alt="Flower" width="460" height="345">
+        <div class="carousel-caption">
+          <h3>White</h3>
+          <p></p>
+        </div>
+        </div>
+      
+      </div>
+
+      <!-- Left and right controls -->
+      <a class="left carousel-control"href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+      </div>
+    
+        <div class="modal-footer">
+          <button type="submit" id="planet_add" class="btn btn-info">Submit</button>
+        </div>
+    
+      </div>
+      
+        </div>
+       </div>
+   </div>
+    </form>
+	  <!-- Info Modal -->
+	  <div id="InfoModal" class="modal fade" role="dialog" style="display:none;">
+  <div class="modal-dialog">
+    <!-- star info -->
+    <!-- Modal content-->
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Star Infomation</h4>
+      </div>
+      <div class="modal-body">
+        <h5>Star Name </h5>
+			<h4 id="starName"></h4>
+		<h5>Number of Planet </h5>
+			<h4 id="planetNum"></h4>
+		<h5>Star Mass </h5>
+			<h4 id="starMass"></h4>
+		<h5>Star Position </h5>
+			<h4 id="starPositionX"></h4>
+			<h4 id="starPositionY"></h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+	</div>
+	
+	</div>
+
+     <div id="viewport">
+      <canvas id="maincanvas"></canvas>
+	  <div class ="row" id="buttonBar" style="position:fixed; top:10px; margin:5px ;width:100%;">
+    
+		<div class ="col-sm-3" id="buttonList">
+			<div class="col-sm-6">
+				<button type="button" class="btn btn-default" id="PeresonalView">Personal View</button>
+      </div>
+      <!--
+			<div class="dropdown col-sm-6" id= "material">
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Material
+				<span class="caret"></span></button>
+				<ul class="dropdown-menu">	
+				<li><button type="button" class="btn btn-default" style="width:100%;"><img src="{% static '/images/mainPage/gold.png' %}" alt="Cinque Terre" width="40" height="40"><span>100</span></button></li>
+				<li><button type="button" class="btn btn-default" style="width:100%;"><img src="{% static '/images/mainPage/soil.png' %}"a lt="Cinque Terre" width="40" height="40"><span>100</span></button></li>
+				<li><button type="button" class="btn btn-default" style="width:100%;"><img src="{% static '/images/mainPage/wood.png' %}" alt="Cinque Terre" width="40" height="40"><span>100</span></button></li>
+				<li><button type="button" class="btn btn-default" style="width:100%;"><img src="{% static '/images/mainPage/water.png' %}" alt="Cinque Terre" width="40" height="40"><span>100</span></button></li>
+				<li><button type="button" class="btn btn-default" style="width:100%;"><img src="{% static '/images/mainPage/bronde.png' %}" alt="Cinque Terre" width="40" height="40"><span>100</span></button></li>
+				</ul>
+			</div>
+      -->
+      <div class="col-sm-6" id="createPlanet" style="display: none;">
+          <a href="/profiles/create_planet"><button class="btn btn-primary" type="button">Create Planet!</button></a>
+      </div>
+		</div>
+    
+		<div class="col-sm-6">
+			
+		</div>
+		<div class="col-sm-1" id="createMission"> 
+			<img src="{% static '/images/createMission.png' %}" alt="Cinque Terre" width="120" height="80" data-toggle="modal" data-target="#empty_sheet">
+		</div>
+		<div class="dropdown col-sm-2" id= "toolBar" style="background-color:transparent;">
+			<img class="btn dropdown-toggle" type="button"  data-toggle="dropdown" src="{% static '/images/toolBar.png' %}" alt="Cinque Terre" width="120" height="80" style="background-color:black;">
+			<div class="dropdown-menu" style="background-color:black;">	
+				<li><a href="/profiles/{{ user.id }}/personal"><img type="button" class="btn" src="{% static '/images/mainPage/personal.png' %}" alt="Cinque Terre" width="180" height="75" style="background-color:black;"></a></li>
+				<li><a href="/mission/"><img type="button" class="btn" src="{% static '/images/mainPage/missions.jpg' %}" alt="Cinque Terre" width="180" height="75" style="background-color:black;"></a></li>
+				<li><a href="/about/"><img type="button" class="btn" src="{% static '/images/mainPage/About.jpg' %}" alt="Cinque Terre" width="180" height="75" style="background-color:black;"></a></li>
+				</div>
+		</div>
+
+	  </div>
+	  	<div class="row" style="position:fixed; bottom:10px; margin:5px">
+			<div class="col-sm-4">
+				<div class="input-group-btn">
+					<button id="screen-zoomin" class="btn btn-default" type="submit">
+						<i class="glyphicon glyphicon-plus"></i>
+					</button>
+					<button id="screen-zoomout" class="btn btn-default" type="submit">
+						<i class="glyphicon glyphicon-minus"></i>
+					</button>
+				</div>
+			</div>
+			<div class="col-sm-3">  
+			</div>
+			<div class="col-sm-2">  
+			</div>
+			<div class="col-sm-3">
+				<div  id="searchArea">
+					<div class="input-group"> 
+						<input id="searchContent" type="text" class="form-control" placeholder="Search" >
+						<div class="input-group-btn">
+							<button id="search-normal" class="btn btn-default" type="submit">
+							<i class="glyphicon glyphicon-search"></i>
+							</button>
+							<button id="search-proper" class="btn btn-default" type="submit">
+							<i class="glyphicon glyphicon-zoom-in"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+	
+	<script>
+		var url = ["{% static '/images/mainPage/planet.png' %}", 
+					"{% static '/images/mainPage/uni.png' %}",
+					"{% static '/images/mainPage/gold.png' %}",
+					"{% static '/images/mainPage/soil.png' %}",
+					"{% static '/images/mainPage/bronde.png' %}",
+					"{% static '/images/mainPage/wood.png' %}",
+          "{% static '/images/mainPage/water.png' %}",
+					"{% static '/images/createPlanetPage/red.png' %}",
+          "{% static '/images/createPlanetPage/yellow.png' %}",
+          "{% static '/images/createPlanetPage/blue.png' %}",
+          "{% static '/images/createPlanetPage/white.png' %}"
+		];
+    var image = ["{% static 'images/likes.png' %}","{% static 'images/dislikes.png' %}","{% static 'images/JoinBtn.png' %}","{% static 'images/QuitBtn.png' %}"];
+	</script>
+  <script>
+    var testList = new Array();
+    var userList = new Array();
+    var memberList = new Array();
+    var contributionList = new Array();
+    var usermissionList = new Array();
+    var m = 0;
+    var n = 0;
+    var k = 0;
+    var l = 0;
+    var p = 0;
+    var now_user_name = "{{user.profile.starName}}";
+    var now_user_nickname = "{{user.profile.nickname}}";
+    function mission(user,title,content,kind,private,totalmembers,member,goal,progress,id,isactive){
+      this.founder = user;
+      this.title = title;
+      this.content = content;
+      this.kind = kind;
+      this.private = private;
+      this.totalmembers = totalmembers;
+      this.member = member;
+      this.goal = goal;
+      this.progress = progress;
+      this.id = id;
+      this.isactive = isactive;
+    }
+    function user(x, y, mass, numberOfPlanet, level, color, name){
+      this.x = x;
+      this.y = y;
+      this.numberOfPlanet = numberOfPlanet;
+      this.mass = mass;
+      this.level = level;
+      this.color = color;
+      this.name = name
+    }
+    function Contribution(missionId, degree){
+      this.missionId = missionId;
+      this.degree = degree;
+    }
+    function getMissionDegree(missionId){
+      for(var i=0; i<contributionList.length; i++){
+        if(missionId == contributionList[i].missionId){
+          return contributionList[i].degree;
+        }
+      }
+      return null;
+    }
+  </script>
+  {% for obj in obj_set %}
+  <!--deal with raw data-->
+  <!--mission-->
+  <script>
+    {% if obj.is_active == True %}
+    var str = "{{obj.content}}";
+    var str_esc = escape(str);
+    memberList = new Array();
+    k = 0;
+    {% for item in obj.attendant.all %}
+      var name = "{{item.profile.nickname}}";
+      memberList[k]=name;
+      k++;
+    {% endfor %}
+    
+      testList[m] = new mission("{{obj.user.profile.nickname}}","{{obj.title}}",str_esc,"{{obj.kind}}","{{obj.private}}",{{obj.totalmembers}},memberList,{{obj.goal}},{{obj.progress}},{{obj.id}},true);
+      m+=1;
+    {% endif %}
+    
+  </script>
+  {% endfor %}
+  <!--users-->
+  {% for entry in user_list %}
+  <script>
+    userList[n] = new user({{entry.profile.position_x}}, {{entry.profile.position_y}}, {{entry.profile.mass}}, {{entry.profile.number_of_planets}}, {{entry.profile.level}}, "{{entry.profile.starColor}}", "{{entry.profile.starName}}");
+    n+=1;
+  </script>
+  {% endfor %}
+  {% for item in user.post_attendant.all %}
+  <script>
+    usermissionList[l]={{item.id}};
+    l++;
+  </script>
+  {% endfor %}
+  <!--store the contribution-->
+    {% for item in user_contributions %}
+    <script>
+    contributionList[p] = new Contribution({{item.post.id}}, {{item.contribute}})
+    p += 1;
+    </script>
+    {% endfor %}
+    <!--new user, show the modal-->
+    <script>
+      var new_user = {{user.profile.is_new}};
+      console.log("user", userList);
+    </script>
+    <script>
+    if({{user.profile.mass}} > 3000){
+        document.getElementById("createPlanet").style.display = "";
+    }else{
+        document.getElementById("createPlanet").style.display = "none";
+    }
+    </script>
+  	<script src="{% static 'javascripts/mainPage/index_new16.js' %}"></script>
+    <script src="{% static 'javascripts/mainPage/modal_new17.js' %}"></script>
+    <script src="{% static 'javascripts/createPlanetPage/index.js' %}"></script>
+    <script type="text/javascript">
+      console.log(testList);
+    </script>
+  </body>
+
+</html>
